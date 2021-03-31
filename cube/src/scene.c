@@ -7,18 +7,20 @@
 
 void init_scene(Scene* scene)
 {
-    load_model(&(scene->cube), "cube.obj");
-    scene->texture_id = load_texture("cube.png"); 
+    load_model(&(scene->hare), "hare.obj");
+	load_model(&(scene->cube), "cube.obj");
+	scene->hare_texture_id = load_texture("hare.jpg"); 
+    scene->cube_texture_id = load_texture("cube.png"); 
 
-    glBindTexture(GL_TEXTURE_2D, scene->texture_id);
+   
 
-    scene->material.ambient.red = 0.0;
-    scene->material.ambient.green = 0.0;
-    scene->material.ambient.blue = 0.0;
+    scene->material.ambient.red = 1.0;
+    scene->material.ambient.green = 1.0;
+    scene->material.ambient.blue = 1.0;
 
-    scene->material.diffuse.red = 0.0;
-    scene->material.diffuse.green = 0.0;
-    scene->material.diffuse.blue = 0.0;
+    scene->material.diffuse.red = 1.0;
+    scene->material.diffuse.green = 1.0;
+    scene->material.diffuse.blue = 1.0;
 
     scene->material.specular.red = 0.0;
     scene->material.specular.green = 0.0;
@@ -29,8 +31,8 @@ void init_scene(Scene* scene)
 
 void set_lighting()
 {
-    float ambient_light[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-    float diffuse_light[] = { 0.0f, 0.0f, 0.0, 1.0f };
+    float ambient_light[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    float diffuse_light[] = { 1.0f, 1.0f, 1.0, 1.0f };
     float specular_light[] = { 0.0f, 0.0f, 0.0f, 1.0f };
     float position[] = { 0.0f, 0.0f, 10.0f, 1.0f };
 
@@ -69,10 +71,36 @@ void set_material(const Material* material)
 
 void draw_scene(const Scene* scene)
 {
+	int i;
     set_material(&(scene->material));
     set_lighting();
     draw_origin();
+	
+	glPushMatrix();
+	 glBindTexture(GL_TEXTURE_2D, scene->cube_texture_id);
+	 glScalef(0.2,0.2,0.2);
     draw_model(&(scene->cube));
+	glPopMatrix();
+	
+	glPushMatrix();
+	 glBindTexture(GL_TEXTURE_2D, scene->hare_texture_id);
+	 glTranslatef(0,2,0);
+	 glScalef(0.2,0.2,0.2);
+    draw_model(&(scene->hare));
+	glPopMatrix();
+	
+	
+	
+	glPushMatrix();
+	for (i =0; i< 10; ++i){
+	glTranslatef(2,0,0);
+	glutSolidSphere(1, 30, 30);
+	}
+	glPopMatrix();
+	glPushMatrix();
+	glTranslatef(5,2,2);
+	draw_model(&(scene->cube));
+	glPopMatrix();
 }
 
 void draw_origin()
