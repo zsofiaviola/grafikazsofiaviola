@@ -3,7 +3,7 @@
 #define VIEWPORT_RATIO (4.0 / 3.0)
 #define VIEWPORT_ASPECT 50.0
 
-GLfloat brightness = 0.5;
+GLfloat brightness = 0.75;
 
 struct {
     int x;
@@ -23,13 +23,6 @@ void display()
     if (is_help_visible) {
 		show_help();
     }
-	
-	
-	if (is_fullscreen) {
-		glutFullScreen();
-    } else {
-		glutReshapeWindow(800, 600);
-	}
 
     glutSwapBuffers();
 }
@@ -118,8 +111,12 @@ void keyboard(unsigned char key, int x, int y)
     }
 
 	
-	if(brightness == 1.0)
+	/* fenyero 0-1 hatarok kozott */
+	if(brightness >= 1.0)
+		brightness = 1.0;
+	else if(brightness <= 0.0) {
 		brightness = 0.0;
+	}
 
 
     glutPostRedisplay();

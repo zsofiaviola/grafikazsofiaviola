@@ -17,7 +17,7 @@ void init_camera(Camera* camera)
     camera->speed.z = 0.0;
 
     is_help_visible = FALSE;
-	is_fullscreen = FALSE;
+	//is_fullscreen = FALSE;
 }
 
 void update_camera(Camera* camera, double time)
