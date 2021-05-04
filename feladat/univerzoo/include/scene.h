@@ -6,37 +6,15 @@
 
 #include <obj/model.h>
 
+
 typedef struct Scene
 {
-	Model dragon; //nap
-	Model monkey; //merkúr
-	Model cat; //vénusz
-	Model dolphin; //föld
-	Model fox; //mars
-	Model lion; //jupiter
-	Model deer; //szaturunusz
-	Model bear; //uránusz
-	Model pingvin; //neptunusz
-	Model dog; //plútó
-	Model cube; //ur
-	
-	
-    Material material;
-
-	GLuint texture_id;
-	GLuint monkey_texture_id;
-	GLuint cat_texture_id;
-	GLuint dolphin_texture_id;
-	GLuint fox_texture_id;
-	GLuint lion_texture_id;
-	GLuint deer_texture_id;
-	GLuint bear_texture_id;
-	GLuint pingvin_texture_id;
-	GLuint dog_texture_id;
-	GLuint cube_texture_id;
-	GLuint help_texture_id;
-	
+	Material material;
+	Model models[11];
+	GLuint textures[12];
 } Scene;
+
+
 
 /**
  * Initialize the scene by loading models.
@@ -72,5 +50,11 @@ void set_material_params(Scene* scene);
  * Draw the models.
  */
 void draw_models(Scene* scene);
+
+/**
+ * Draw a model.
+ */
+void draw_a_model(Scene* scene, int index, GLfloat scale, GLfloat trX, GLfloat trY, GLfloat trZ, GLfloat rotA, GLfloat rotX, GLfloat rotY, GLfloat rotZ); 
+
 
 #endif /* SCENE_H */

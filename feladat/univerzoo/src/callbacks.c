@@ -3,7 +3,7 @@
 #define VIEWPORT_RATIO (4.0 / 3.0)
 #define VIEWPORT_ASPECT 50.0
 
-GLfloat brightness = 0.75;
+GLfloat brightness = 0.5;
 
 struct {
     int x;
@@ -112,11 +112,11 @@ void keyboard(unsigned char key, int x, int y)
 
 	
 	/* fenyero 0-1 hatarok kozott */
-	if(brightness >= 1.0)
+	/*if(brightness >= 1.0)
 		brightness = 1.0;
 	else if(brightness <= 0.0) {
 		brightness = 0.0;
-	}
+	}*/
 
 
     glutPostRedisplay();

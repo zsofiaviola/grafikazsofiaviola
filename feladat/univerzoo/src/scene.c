@@ -1,17 +1,14 @@
 #include "scene.h"
-
 #include <GL/glut.h>
-
 #include <obj/load.h>
 #include <obj/draw.h>
 
 
-
 void set_material_params(Scene* scene)
 {
-    scene->material.ambient.red = 1.0;
-    scene->material.ambient.green = 1.0;
-    scene->material.ambient.blue = 1.0;
+    scene->material.ambient.red = 0.2;
+    scene->material.ambient.green = 0.2;
+    scene->material.ambient.blue = 0.2;
 
     scene->material.diffuse.red = 1.0;
     scene->material.diffuse.green = 1.0;
@@ -21,47 +18,87 @@ void set_material_params(Scene* scene)
     scene->material.specular.green = 1.0;
     scene->material.specular.blue = 1.0;
 
-    scene->material.shininess = 1000.0;
+    scene->material.shininess = 100.0;
 }
 
 
 
 void load_models_and_textures(Scene* scene)
 {	
-	load_model(&(scene->dragon), "data/modellek/dragon.obj");
-	scene->texture_id = load_texture("data/texturak/sun.png");
+	const char model_path[11][27] =
+	{ 
+	  "data/modellek/dragon.obj",
+	  "data/modellek/monkii.obj",
+	  "data/modellek/cat.obj",
+	  "data/modellek/dolphin.obj",
+	  "data/modellek/fox.obj",
+	  "data/modellek/lion.obj",
+	  "data/modellek/deer.obj",
+	  "data/modellek/pingviin.obj",
+	  "data/modellek/bear.obj",
+	  "data/modellek/dog.obj",
+	  "data/modellek/cube.obj"  
+	};
 
-	load_model(&(scene->monkey), "data/modellek/monkii.obj");
-	scene->monkey_texture_id = load_texture("data/texturak/merkur.png");
+	const char texture_path[12][28] =
+	{ 
+	  "data/texturak/sun.png",
+	  "data/texturak/merkur.png",
+	  "data/texturak/venus.png",
+	  "data/texturak/e2.png",
+	  "data/texturak/mars.png",
+	  "data/texturak/jupiter.png",
+	  "data/texturak/saturn.png",
+	  "data/texturak/neptune.png",
+	  "data/texturak/uranus.png",
+	  "data/texturak/pluto.png",
+	  "data/texturak/ur.png",
+	  "data/texturak/help.bmp"
+	};
+
+	int i = 0;
 	
-	load_model(&(scene->cat), "data/modellek/cat.obj");
-	scene->cat_texture_id = load_texture("data/texturak/venus.png");
+	for(i = 0; i < 11; i = i + 1) {
+		load_model(&(scene->models[i]), model_path[i]);
+		scene->textures[i] = load_texture(texture_path[i]);
+	}
 	
-	load_model(&(scene->dolphin), "data/modellek/dolphin.obj");
-	scene->dolphin_texture_id = load_texture("data/texturak/e2.png");
+	scene->textures[11] = load_texture(texture_path[11]);
+}
+
+
+void draw_a_model(Scene* scene, int index, GLfloat scale, GLfloat trX, GLfloat trY, GLfloat trZ, GLfloat rotA, GLfloat rotX, GLfloat rotY, GLfloat rotZ) 
+{
+	glPushMatrix();
+	glBindTexture(GL_TEXTURE_2D, scene->textures[index]);
+	glScalef(scale,scale,scale); 
+	glTranslatef(trX,trY,trZ);
+	glRotatef(rotA,rotX,rotY,rotZ);	
+	draw_model(&(scene->models[index]));
+	glPopMatrix();	
+}
+
+
+void draw_models(Scene* scene) 
+{
+	int time = glutGet(GLUT_ELAPSED_TIME);
 	
-	load_model(&(scene->fox), "data/modellek/fox.obj");
-	scene->fox_texture_id = load_texture("data/texturak/mars.png");
+	GLfloat modelScale[11] = {0.2, 0.08, 1.5, 0.02, 0.05, 0.004, 0.5, 0.0008, 0.1, 0.0001, 100.0};
+
+	GLfloat modelTranslateX[11] = {20, -10, 5, 1100, 270, 1100, 90, 50, 45, 10000, 0};
+	GLfloat modelTranslateY[11] = {-10, 10, -1, -600, -550, -1400, -100, -1100, -70, -60000, 0};
+	GLfloat modelTranslateZ[11] = {0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0};
 	
-	load_model(&(scene->lion), "data/modellek/lion.obj");
-	scene->lion_texture_id = load_texture("data/texturak/jupiter.png");
+	GLfloat modelRotateA[11] = {time/25, time/25, -time/25, time/10, time/10, time/6, time/5, time/25, time/25, time/25, 0};
+	GLfloat modelRotateX[11] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+	GLfloat modelRotateY[11] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+	GLfloat modelRotateZ[11] = {1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f};
+
+	int i = 0;
 	
-	load_model(&(scene->deer), "data/modellek/deer.obj");
-	scene->deer_texture_id = load_texture("data/texturak/saturn.png");
-	
-	load_model(&(scene->pingvin), "data/modellek/pingviin.obj");
-	scene->pingvin_texture_id = load_texture("data/texturak/neptune.png");
-	
-	load_model(&(scene->bear), "data/modellek/bear.obj");
-	scene->bear_texture_id = load_texture("data/texturak/uranus.png");
-	
-	load_model(&(scene->dog), "data/modellek/dog.obj");
-	scene->dog_texture_id = load_texture("data/texturak/pluto.png");
-	
-	load_model(&(scene->cube), "data/modellek/cube.obj");
-	scene->cube_texture_id = load_texture("data/texturak/ur.png");
-	
-	scene->help_texture_id = load_texture("data/texturak/help.bmp");
+	for(i = 0; i < 11; i = i + 1) {
+		draw_a_model(scene, i, modelScale[i], modelTranslateX[i], modelTranslateY[i], modelTranslateZ[i], modelRotateA[i], modelRotateX[i], modelRotateY[i], modelRotateZ[i]);
+	}
 }
 
 
@@ -106,117 +143,9 @@ void set_material(Material* material)
 }
 
 
-void draw_models(Scene* scene) 
-{
-	int time = glutGet(GLUT_ELAPSED_TIME);
-	
-	//dragon - Nap 
-	glPushMatrix();
-	glBindTexture(GL_TEXTURE_2D, scene->texture_id);
-	glScalef(0.2,0.2,0.2); 
-	glTranslatef(20,-10,0);
-	glRotatef(time/25,0.0f,0.0f,1.0f);	
-	draw_model(&(scene->dragon));
-	glPopMatrix();
-	
-	/* monkey - Merkúr */
-	glPushMatrix();
-	glBindTexture(GL_TEXTURE_2D, scene->monkey_texture_id);
-	glScalef(0.08,0.08,0.08); 
-	glTranslatef(-10,10,0);
-	glRotatef(time/25,0.0f,0.0f,1.0f);
-	draw_model(&(scene->monkey));
-	glPopMatrix();
-	
-	
-	/* cat - Vénusz */
-	glPushMatrix();
-	glBindTexture(GL_TEXTURE_2D, scene->cat_texture_id);
-	glScalef(1.5,1.5,1.5); 
-	glTranslatef(5,-1,0);
-	glRotatef(-time/25,0.0f,0.0f,1.0f);	
-	draw_model(&(scene->cat));
-	glPopMatrix();
-	
-	/* dolphin - Föld */
-	glPushMatrix();
-	glBindTexture(GL_TEXTURE_2D, scene->dolphin_texture_id);
-	glScalef(0.02,0.02,0.02); 
-	glTranslatef(1100,-600,1);
-	glRotatef(time/10,0.0f,0.0f,1.0f);	
-	draw_model(&(scene->dolphin));
-	glPopMatrix();
-	
-	/* fox - Mars*/
-	glPushMatrix();
-	glBindTexture(GL_TEXTURE_2D, scene->fox_texture_id);
-	glScalef(0.05,0.05,0.05); 
-	glTranslatef(270,-550,0);
-	glRotatef(time/10,0.0f,0.0f,1.0f);	
-	draw_model(&(scene->fox));
-	glPopMatrix(); 
-	
-	
-	/* lion - Jupiter */
-	glPushMatrix();
-	glBindTexture(GL_TEXTURE_2D, scene->lion_texture_id);
-	glScalef(0.004,0.004,0.004); 
-	glTranslatef(1100,-1400,0);
-	glRotatef(time/6,0.0f,0.0f,1.0f);	
-	draw_model(&(scene->lion));
-	glPopMatrix();
-	
-		
-	/* deer - Szaturnusz */
-	glPushMatrix();
-	glBindTexture(GL_TEXTURE_2D, scene->deer_texture_id);
-	glScalef(0.5,0.5,0.5); 
-	glTranslatef(90,-100,0);
-	glRotatef(time/5,0.0f,0.0f,1.0f);	
-	draw_model(&(scene->deer));
-	glPopMatrix();
-	
-	/* bear - Uránusz*/
-	glPushMatrix();
-	glBindTexture(GL_TEXTURE_2D, scene->bear_texture_id);
-	glScalef(0.1,0.1,0.1); 
-	glTranslatef(45,-70,1);
-	glRotatef(time/25,0.0f,0.0f,1.0f);	
-	draw_model(&(scene->bear));
-	glPopMatrix();
-	
-	/* pingvin - Neptunusz*/
-	glPushMatrix();
-	glBindTexture(GL_TEXTURE_2D, scene->pingvin_texture_id);
-	glScalef(0.0008,0.0008,0.0008); 
-	glTranslatef(50,-1100,0);
-	glRotatef(time/25,0.0f,0.0f,1.0f);	
-	draw_model(&(scene->pingvin));
-	glPopMatrix();
-	
-	
-	/* dog - Plútó */
-	glPushMatrix();
-	glBindTexture(GL_TEXTURE_2D, scene->dog_texture_id);
-	glScalef(0.0001,0.0001,0.0001); 
-	glTranslatef(10000,-60000,0);
-	glRotatef(time/25,0.0f,0.0f,1.0f);	
-	draw_model(&(scene->dog));
-	glPopMatrix();
-	
-	
-	glPushMatrix();
-	glBindTexture(GL_TEXTURE_2D, scene->cube_texture_id);
-	glScalef(100.0,100.0,100.0); 
-	glTranslatef(0,0,0);	
-	draw_model(&(scene->cube));
-	glPopMatrix();
-}
-
-
 void show_help(Scene* scene)
 {
-	 glBindTexture(GL_TEXTURE_2D, scene->help_texture_id);
+	 glBindTexture(GL_TEXTURE_2D, scene->textures[11]);
 	 
      glBegin(GL_QUADS);
      {
